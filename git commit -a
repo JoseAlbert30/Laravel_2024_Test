@@ -1,0 +1,225 @@
+warning: CRLF will be replaced by LF in resources/views/components/listing-card.blade.php.
+The file will have its original line endings in your working directory
+warning: CRLF will be replaced by LF in resources/views/partials/_search.blade.php.
+The file will have its original line endings in your working directory
+[1mdiff --git a/app/Models/Listing.php b/app/Models/Listing.php[m
+[1mindex d82e966..c1fbf5f 100644[m
+[1m--- a/app/Models/Listing.php[m
+[1m+++ b/app/Models/Listing.php[m
+[36m@@ -8,4 +8,16 @@[m
+ class Listing extends Model[m
+ {[m
+     use HasFactory;[m
+[32m+[m
+[32m+[m[32m    public function scopeFilter($query, array $filters){[m
+[32m+[m[32m        if($filters['tag'] ?? false){[m
+[32m+[m[32m            $query->where('tags', 'like', '%' . request('tag') . '%');[m
+[32m+[m[32m        }[m
+[32m+[m
+[32m+[m[32m        if($filters['search'] ?? false){[m
+[32m+[m[32m            $query->where('title', 'like', '%' . request('search') . '%')[m
+[32m+[m[32m            ->orWhere('description', 'like', '%' . request('search') . '%')[m
+[32m+[m[32m            ->orWhere('tags', 'like', '%' . request('search') . '%');[m
+[32m+[m[32m        }[m
+[32m+[m[32m    }[m
+ }[m
+[1mdiff --git a/resources/views/components/listing-card.blade.php b/resources/views/components/listing-card.blade.php[m
+[1mindex 29793b1..fed732e 100644[m
+[1m--- a/resources/views/components/listing-card.blade.php[m
+[1m+++ b/resources/views/components/listing-card.blade.php[m
+[36m@@ -12,28 +12,7 @@[m [mclass="hidden w-48 mr-6 md:block"[m
+                 <a href="/listings/{{$listing->id}}">{{$listing->title}}</a>[m
+             </h3>[m
+             <div class="text-xl font-bold mb-4">{{$listing->company}}</div>[m
+[31m-            <ul class="flex">[m
+[31m-                <li[m
+[31m-                    class="flex items-center justify-center bg-black text-white rounded-xl py-1 px-3 mr-2 text-xs"[m
+[31m-                >[m
+[31m-                    <a href="#">Laravel</a>[m
+[31m-                </li>[m
+[31m-                <li[m
+[31m-                    class="flex items-center justify-center bg-black text-white rounded-xl py-1 px-3 mr-2 text-xs"[m
+[31m-                >[m
+[31m-                    <a href="#">API</a>[m
+[31m-                </li>[m
+[31m-                <li[m
+[31m-                    class="flex items-center justify-center bg-black text-white rounded-xl py-1 px-3 mr-2 text-xs"[m
+[31m-                >[m
+[31m-                    <a href="#">Backend</a>[m
+[31m-                </li>[m
+[31m-                <li[m
+[31m-                    class="flex items-center justify-center bg-black text-white rounded-xl py-1 px-3 mr-2 text-xs"[m
+[31m-                >[m
+[31m-                    <a href="#">Vue</a>[m
+[31m-                </li>[m
+[31m-            </ul>[m
+[32m+[m[32m            <x-listing-tags :tagsCsv="$listing->tags"/>[m
+             <div class="text-lg mt-4">[m
+                 <i class="fa-solid fa-location-dot"></i> {{$listing->location}}[m
+             </div>[m
+[1mdiff --git a/resources/views/listing.blade.php b/resources/views/listing.blade.php[m
+[1mdeleted file mode 100644[m
+[1mindex 0e18d5e..0000000[m
+[1m--- a/resources/views/listing.blade.php[m
+[1m+++ /dev/null[m
+[36m@@ -1,74 +0,0 @@[m
+[31m-@extends('layout')[m
+[31m-[m
+[31m-@section('content')[m
+[31m-@include('partials._search')[m
+[31m-[m
+[31m-<a href="/" class="inline-block text-black ml-4 mb-4"[m
+[31m-                ><i class="fa-solid fa-arrow-left"></i> Back[m
+[31m-            </a>[m
+[31m-            <div class="mx-4">[m
+[31m-                <x-card class="p-10">[m
+[31m-                    <div[m
+[31m-                        class="flex flex-col items-center justify-center text-center"[m
+[31m-                    >[m
+[31m-                        <img[m
+[31m-                            class="w-48 mr-6 mb-6"[m
+[31m-                            src="{{asset('images/no-image.png')}}"[m
+[31m-                            alt=""[m
+[31m-                        />[m
+[31m-[m
+[31m-                        <h3 class="text-2xl mb-2">{{$listing->title}}</h3>[m
+[31m-                        <div class="text-xl font-bold mb-4">{{$listing->company}}</div>[m
+[31m-                        <ul class="flex">[m
+[31m-                            <li[m
+[31m-                                class="bg-black text-white rounded-xl px-3 py-1 mr-2"[m
+[31m-                            >[m
+[31m-                                <a href="#">Laravel</a>[m
+[31m-                            </li>[m
+[31m-                            <li[m
+[31m-                                class="bg-black text-white rounded-xl px-3 py-1 mr-2"[m
+[31m-                            >[m
+[31m-                                <a href="#">API</a>[m
+[31m-                            </li>[m
+[31m-                            <li[m
+[31m-                                class="bg-black text-white rounded-xl px-3 py-1 mr-2"[m
+[31m-                            >[m
+[31m-                                <a href="#">Backend</a>[m
+[31m-                            </li>[m
+[31m-                            <li[m
+[31m-                                class="bg-black text-white rounded-xl px-3 py-1 mr-2"[m
+[31m-                            >[m
+[31m-                                <a href="#">Vue</a>[m
+[31m-                            </li>[m
+[31m-                        </ul>[m
+[31m-                        <div class="text-lg my-4">[m
+[31m-                            <i class="fa-solid fa-location-dot"></i> {{$listing->location}}[m
+[31m-                        </div>[m
+[31m-                        <div class="border border-gray-200 w-full mb-6"></div>[m
+[31m-                        <div>[m
+[31m-                            <h3 class="text-3xl font-bold mb-4">[m
+[31m-                                Job Description[m
+[31m-                            </h3>[m
+[31m-                            <div class="text-lg space-y-6">[m
+[31m-                                {{$listing->description}}[m
+[31m-[m
+[31m-                                <a[m
+[31m-                                    href="mailto:{{$listing->email}}"[m
+[31m-                                    class="block bg-laravel text-white mt-6 py-2 rounded-xl hover:opacity-80"[m
+[31m-                                    ><i class="fa-solid fa-envelope"></i>[m
+[31m-                                    Contact Employer</a[m
+[31m-                                >[m
+[31m-[m
+[31m-                                <a[m
+[31m-                                    href="{{$listing->website}}"[m
+[31m-                                    target="_blank"[m
+[31m-                                    class="block bg-black text-white py-2 rounded-xl hover:opacity-80"[m
+[31m-                                    ><i class="fa-solid fa-globe"></i> Visit[m
+[31m-                                    Website</a[m
+[31m-                                >[m
+[31m-                            </div>[m
+[31m-                        </div>[m
+[31m-                    </div>[m
+[31m-                </x-card>[m
+[31m-            </div>[m
+[31m-@endsection[m
+\ No newline at end of file[m
+[1mdiff --git a/resources/views/listings.blade.php b/resources/views/listings.blade.php[m
+[1mdeleted file mode 100644[m
+[1mindex 3358882..0000000[m
+[1m--- a/resources/views/listings.blade.php[m
+[1m+++ /dev/null[m
+[36m@@ -1,22 +0,0 @@[m
+[31m-@extends('layout')[m
+[31m-[m
+[31m-@section('content')[m
+[31m-@include('partials._hero')[m
+[31m-@include('partials._search')[m
+[31m-[m
+[31m-<div class="lg:grid lg:grid-cols-2 gap-4 space-y-4 md:space-y-0 mx-4">[m
+[31m-[m
+[31m-@unless(count($listings) == 0)[m
+[31m-[m
+[31m-@foreach($listings as $listing)[m
+[31m-    <x-listing-card :listing="$listing"/>[m
+[31m-    [m
+[31m-@endforeach[m
+[31m-[m
+[31m-@else[m
+[31m-    <p>No listings found</p>[m
+[31m-@endunless[m
+[31m-[m
+[31m-</div>[m
+[31m-[m
+[31m-@endsection    [m
+\ No newline at end of file[m
+[1mdiff --git a/resources/views/partials/_search.blade.php b/resources/views/partials/_search.blade.php[m
+[1mindex cee0a2d..49cf209 100644[m
+[1m--- a/resources/views/partials/_search.blade.php[m
+[1m+++ b/resources/views/partials/_search.blade.php[m
+[36m@@ -1,4 +1,4 @@[m
+[31m-<form action="">[m
+[32m+[m[32m<form action="/">[m
+     <div class="relative border-2 border-gray-100 m-4 rounded-lg">[m
+         <div class="absolute top-4 left-3">[m
+             <i[m
+[1mdiff --git a/routes/web.php b/routes/web.php[m
+[1mindex fcea53c..7b7304d 100644[m
+[1m--- a/routes/web.php[m
+[1m+++ b/routes/web.php[m
+[36m@@ -1,5 +1,6 @@[m
+ <?php[m
+ [m
+[32m+[m[32muse App\Http\Controllers\ListingController;[m
+ use Illuminate\Http\Request;[m
+ use Illuminate\Support\Facades\Route;[m
+ use App\Models\Listing;[m
+[36m@@ -16,19 +17,10 @@[m
+ */[m
+ [m
+ //All Listing[m
+[31m-Route::get('/', function () {[m
+[31m-    return view('listings', [[m
+[31m-        'heading' => 'Latest Listings',[m
+[31m-        'listings' => Listing::all()[m
+[31m-    ]);[m
+[31m-});[m
+[32m+[m[32mRoute::get('/', [ListingController::class, 'index']);[m
+ [m
+ //Single Listing[m
+[31m-Route::get('/listings/{listing}', function(Listing $listing){[m
+[31m-    return view('listing', [[m
+[31m-        'listing' => $listing[m
+[31m-    ]);[m
+[31m-});[m
+[32m+[m[32mRoute::get('/listings/{listing}', [ListingController::class, 'show']);[m
+ [m
+ [m
+ Route::get('/hello', function (){[m
+[36m@@ -45,3 +37,11 @@[m
+     return $request->name . ' ' . $request->city;[m
+ });[m
+ [m
+[32m+[m[32m// Common Resource Routes:[m
+[32m+[m[32m// index - Show all listing[m
+[32m+[m[32m// show - Show single listing[m
+[32m+[m[32m// create - Show form to create new listing[m
+[32m+[m[32m// store - Store new listing[m
+[32m+[m[32m// edit - Show form to edit listing[m
+[32m+[m[32m// update - Update listing[m
+[32m+[m[32m// destroy - Delete listing[m
+\ No newline at end of file[m
